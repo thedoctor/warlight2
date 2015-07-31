@@ -9,7 +9,7 @@ class Random(object):
     def randrange(min, max):
         '''
         A pseudo random number generator to replace random.randrange
-        
+
         Works with an inclusive left bound and exclusive right bound.
         E.g. Random.randrange(0, 5) in [0, 1, 2, 3, 4] is always true
         '''

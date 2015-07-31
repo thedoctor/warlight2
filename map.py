@@ -14,7 +14,7 @@ class Map(object):
         Returns a region instance by id.
         '''
         return [region for region in self.regions if region.id == region_id][0]
-    
+
     def get_super_region_by_id(self, super_region_id):
         '''
         Returns a super region instance by id.

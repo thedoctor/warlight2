@@ -4,7 +4,7 @@ class SuperRegion(object):
     '''
     def __init__(self, super_region_id, worth):
         '''
-        Initializes with an id, the super region's worth and an empty lists for 
+        Initializes with an id, the super region's worth and an empty lists for
         regions located inside this super region
         '''
         self.id = super_region_id

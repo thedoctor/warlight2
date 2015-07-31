@@ -27,7 +27,7 @@ class Bot(object):
     def run(self):
         '''
         Main loop
-        
+
         Keeps running while being fed data from stdin.
         Writes output to stdout, remember to flush!
         '''
@@ -90,7 +90,7 @@ class Bot(object):
                     stderr.flush()
             except EOFError:
                 return
-    
+
 
     def update_settings(self, options):
         '''
@@ -121,7 +121,7 @@ class Bot(object):
 
                 super_region = self.map.get_super_region_by_id(options[i + 1])
                 region = Region(options[i], super_region)
-                
+
                 self.map.regions.append(region)
                 super_region.regions.append(region)
 
@@ -133,7 +133,7 @@ class Bot(object):
                 for neighbour in neighbours:
                     region.neighbours.append(neighbour)
                     neighbour.neighbours.append(region)
-            
+
         if map_type == 'wastelands':
 
             for i in range(1, len(options)):
@@ -143,7 +143,7 @@ class Bot(object):
 
 
         if map_type == 'neighbors':
-            
+
             for region in self.map.regions:
 
                 if region.is_on_super_region_border:
@@ -166,7 +166,7 @@ class Bot(object):
         orig_owned_regions = self.map.get_owned_regions(self.settings['your_bot'])[:]
 
         for i in range(0, len(options), 3):
-            
+
             region = self.map.get_region_by_id(options[i])
             if region.owner == self.settings['your_bot']:
                 orig_owned_regions.remove(region)
@@ -177,44 +177,44 @@ class Bot(object):
         for region in orig_owned_regions:
             #print region.id + ' was captured'
             region.owner = self.settings['opponent_bot']
-                        
+
 
     def pick_starting_region(self, options):
         '''
         Method to select our initial starting region.
-        
+
         Currently selects a random region from the list.
         '''
         i = Random.randrange(0,len(options)-1)
-        
+
         return options[i]
 
 
     def place_troops(self):
         '''
         Method to place our troops.
-        
+
         Currently keeps places a maximum of two troops on random regions.
         '''
         placements = []
         region_index = 0
         troops_remaining = int(self.settings['starting_armies'])
-        
+
         owned_regions = self.map.get_owned_regions(self.settings['your_bot'])
         duplicated_regions = owned_regions * (3 + int(troops_remaining / 2))
         shuffled_regions = Random.shuffle(duplicated_regions)
-        
+
         while troops_remaining:
 
             region = shuffled_regions[region_index]
-            
+
             if troops_remaining > 1:
 
                 placements.append([region.id, 2])
 
                 region.troop_count += 2
                 troops_remaining -= 2
-                
+
             else:
 
                  placements.append([region.id, 1])
@@ -223,7 +223,7 @@ class Bot(object):
                  troops_remaining -= 1
 
             region_index += 1
-            
+
         return ', '.join(['%s place_armies %s %d' % (self.settings['your_bot'], placement[0],
             placement[1]) for placement in placements])
 
@@ -231,14 +231,14 @@ class Bot(object):
     def attack_transfer(self):
         '''
         Method to attack another region or transfer troops to allied regions.
-        
+
         Currently checks whether a region has more than six troops placed to attack,
         or transfers if more than 1 unit is available.
         '''
         attack_transfers = []
-        
+
         owned_regions = self.map.get_owned_regions(self.settings['your_bot'])
-        
+
         for region in owned_regions:
             neighbours = list(region.neighbours)
             while len(neighbours) > 0:
@@ -251,10 +251,10 @@ class Bot(object):
                     region.troop_count = 1
                 else:
                     neighbours.remove(target_region)
-        
+
         if len(attack_transfers) == 0:
             return 'No moves'
-        
+
         return ', '.join(['%s attack/transfer %s %s %s' % (self.settings['your_bot'], attack_transfer[0],
             attack_transfer[1], attack_transfer[2]) for attack_transfer in attack_transfers])
 
